@@ -2,19 +2,25 @@
 <title>Simon Pratt's Computational Geometry page</title>
 </head><body>
 <a href="log/pnd.log">Today's log of network outages</a><br /><br />
-<iframe id="log_frame" style="width: 100%; height: 80%"
-src="log/pnd.log"></iframe>
+<div id="log_div" style="width: 100%; height: 80%; visibility: hidden; overflow-y: scroll; border: solid 1px black"></div><br /><br />
 <script>
-var log_frame = document.getElementById('log_frame');
-log_frame.onload = function() {
-  console.log("Scrolling iframe...");
-  log_frame.contentWindow.scrollTo(0,Number.MAX_VALUE.toFixed(0));
+var log_div = document.getElementById("log_div");
+var response;
+var xmlhttp=new XMLHttpRequest();
+xmlhttp.onreadystatechange=function() {
+    console.log("Ready state change...");
+    if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+	log_div.innerText=xmlhttp.responseText;
+	log_div.style.visibility="visible";
+	log_div.scrollTop=log_div.scrollHeight;
+  }
 }
-refresh_iframe = function() {
-  console.log("Refreshing iframe...");
-  log_frame.src = log_frame.src;
-};
-setInterval(refresh_iframe,5000);
+refresh_log = function() {
+    xmlhttp.open("GET","log/pnd.log",true);
+    xmlhttp.send();
+    console.log("Sending request...");
+}
+setInterval(refresh_log,5000);
 </script><br /><br />
 <a href="log/">Full list of logs</a><br /><br />
 </body>

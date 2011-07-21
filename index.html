@@ -1,8 +1,8 @@
 <html><head>
 <title>Simon Pratt's Computational Geometry page</title>
 </head><body>
-<a href="log/pnd.log">Today's log of network outages</a><br /><br />
-<div id="log_div" style="width: 100%; height: 80%; visibility: hidden; overflow-y: scroll; border: solid 1px black"></div><br /><br />
+<a href="log/pnd.log">Today's log of network outages</a>
+<div id="log_div" style="width: 100%; height: 90%; visibility: hidden; overflow-y: scroll; border: solid 1px black"></div>
 <script>
 var log_div = document.getElementById("log_div");
 var response;
@@ -10,19 +10,20 @@ var xmlhttp=new XMLHttpRequest();
 xmlhttp.onreadystatechange=function() {
     console.log("Ready state change...");
     if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+	console.log("Status: 200");
 	log_div.innerText=xmlhttp.responseText;
 	log_div.style.visibility="visible";
 	log_div.scrollTop=log_div.scrollHeight;
   }
 }
 refresh_log = function() {
+    console.log("Sending request...");
     xmlhttp.open("GET","log/pnd.log",true);
     xmlhttp.send();
-    console.log("Sending request...");
 }
 refresh_log();
 setInterval(refresh_log,5000);
-</script><br /><br />
-<a href="log/">Full list of logs</a><br /><br />
+</script>
+<a href="log/">Full list of logs</a>
 </body>
 </html>

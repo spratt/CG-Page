@@ -1,0 +1,21 @@
+<html><head>
+<title>Simon Pratt's Computational Geometry page</title>
+</head><body>
+<a href="log/pnd.log">Today's log of network outages</a><br /><br />
+<iframe id="log_frame" style="width: 100%; height: 80%"
+src="log/pnd.log"></iframe>
+<script>
+var log_frame = document.getElementById('log_frame');
+log_frame.onload = function() {
+  console.log("Scrolling iframe...");
+  log_frame.contentWindow.scrollTo(0,Number.MAX_VALUE.toFixed(0));
+}
+refresh_iframe = function() {
+  console.log("Refreshing iframe...");
+  log_frame.src = log_frame.src;
+};
+setInterval(refresh_iframe,5000);
+</script><br /><br />
+<a href="log/">Full list of logs</a><br /><br />
+</body>
+</html>

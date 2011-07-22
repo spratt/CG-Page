@@ -1,29 +1,131 @@
 <html><head>
 <title>Simon Pratt's Computational Geometry page</title>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 </head><body>
+<!---------------------------------------------------------------------+
+| Network outage log
++----------------------------------------------------------------------->
 <a href="log/pnd.log">Today's log of network outages</a>
 <div id="log_div" style="width: 100%; height: 90%; visibility: hidden; overflow-y: scroll; border: solid 1px black"></div>
 <script>
 var log_div = document.getElementById("log_div");
 var response;
-var xmlhttp=new XMLHttpRequest();
-xmlhttp.onreadystatechange=function() {
-    console.log("Ready state change...");
-    if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-	console.log("Status: 200");
-	log_div.innerText=xmlhttp.responseText;
+var log_xh=new XMLHttpRequest();
+log_xh.onreadystatechange=function() {
+    console.log("log_xh: Ready state change...");
+    if (log_xh.readyState==4 && log_xh.status==200) {
+	console.log("log_xh: Status: 200");
+	log_div.innerText=log_xh.responseText;
 	log_div.style.visibility="visible";
 	log_div.scrollTop=log_div.scrollHeight;
-  }
+    }
 }
 refresh_log = function() {
-    console.log("Sending request...");
-    xmlhttp.open("GET","log/pnd.log",true);
-    xmlhttp.send();
+    console.log("log_xh: Sending request...");
+    log_xh.open("GET","log/pnd.log",true);
+    log_xh.send();
 }
 refresh_log();
 setInterval(refresh_log,5000);
 </script>
 <a href="log/">Full list of logs</a>
+<!---------------------------------------------------------------------+
+| Graph
++----------------------------------------------------------------------->
+<div id="graph_div"></div>
+<script>
+/******************************************************************************
+* Graph                                                                       *
+******************************************************************************/
+var graph_div = document.getElementById("graph_div");
+var data = new Array();
+var datum = function() {
+    return {"date":null,"downtime":0};
+}
+google.load("visualization", "1", {packages:["corechart"]});
+var drawGraph = function() {
+    data.sort(function(a,b) {
+	return a.date > b.date;
+    });
+    var dataTable = new google.visualization.DataTable();
+    dataTable.addColumn('date','Date');
+    dataTable.addColumn('number','Downtime');
+    dataTable.addRows(data.length);
+    for(var i = 0; i < data.length; ++i) {
+	dataTable.setValue(i, 0, data[i].date);
+	dataTable.setValue(i, 1, Number(data[i].downtime));
+    }
+    var chart = new google.visualization.LineChart(graph_div);
+    chart.draw(dataTable, {width: 400, height: 240, title: 'Downtime by date'});
+}
+/******************************************************************************
+* Parse files for total downtime each day                                     *
+******************************************************************************/
+var file_xh=new XMLHttpRequest();
+var num_of_files;
+var files_parsed = 0;
+var parseLogText = function(text) {
+    var lines = text.split("\n");
+    var date_line = lines[0];
+    var downtime_line = lines[lines.length-2];
+    if(downtime_line.indexOf("downtime") == -1) return null;
+    var toReturn = new datum();
+    date_line = date_line.substr(0,date_line.lastIndexOf(":"));
+    toReturn.date = new Date(date_line);
+    downtime_line = downtime_line.substr(downtime_line.indexOf(":")+2);
+    toReturn.downtime = downtime_line.substr(0,downtime_line.indexOf("s")-1);
+    return toReturn;
+}
+var normalOnReadyStateChange = function() {
+    console.log("file_xh: Normal file...");
+    if (file_xh.readyState==4 && file_xh.status==200) {
+	++files_parsed;
+	var datum = parseLogText(file_xh.responseText);
+	if(datum != null) data.push(datum);
+	if(files_parsed == num_of_files) {
+	    console.log("file_xh: Last file...");
+	    drawGraph();
+	}
+    }
+}
+var parseFiles = function(files) {
+    num_of_files = files.length;
+    for(var i = 0; i < num_of_files; ++i) {
+	file_xh.onreadystatechange=normalOnReadyStateChange;
+	file_xh.open("GET","log/" + files[i],false);
+	file_xh.send();
+    }
+}
+/******************************************************************************
+* Retrieve the list of files                                                  *
+******************************************************************************/
+var parseDirectoryListing = function(text) {
+    var files = new Array();
+    var lines = text.split('\n');
+    for(var i in lines) {
+	var line = lines[i];
+	if(line.indexOf("pnd.log") != -1) {
+	    // parse line
+	    var file = line.substr(line.indexOf("href=\"")+6);
+	    file = file.substr(0,file.indexOf("\""));
+	    files.push(file);
+	}
+    }
+    return files;
+}
+var files_xh=new XMLHttpRequest();
+files_xh.onreadystatechange=function() {
+    console.log("files_xh: Ready state change...");
+    if (files_xh.readyState==4 && files_xh.status==200) {
+	console.log("files_xh: Status: 200");
+	parseFiles(parseDirectoryListing(files_xh.responseText));
+    }
+}
+var get_files = function() {
+    files_xh.open("GET","log/",true);
+    files_xh.send();
+}
+</script>
+<button onclick="get_files()">Draw Graph</button>
 </body>
 </html>

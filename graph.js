@@ -94,17 +94,30 @@ var parseDirectoryListing = function(text) {
     return files;
 }
 var files_xh=new XMLHttpRequest();
-files_xh.onreadystatechange=function() {
-    if(DEBUG_ENABLED)
-	console.log("files_xh: Ready state change...");
-    if (files_xh.readyState==4 && files_xh.status==200) {
-	if(DEBUG_ENABLED)
-	    console.log("files_xh: Status: 200");
-	parseFiles(parseDirectoryListing(files_xh.responseText));
-    }
-}
 var get_files = function() {
+    files_xh.onreadystatechange=function() {
+	if(DEBUG_ENABLED)
+	    console.log("files_xh: Ready state change...");
+	if (files_xh.readyState==4 && files_xh.status==200) {
+	    if(DEBUG_ENABLED)
+		console.log("files_xh: Status: 200");
+	    parseFiles(parseDirectoryListing(files_xh.responseText));
+	}
+    }
+    if(DEBUG_ENABLED)
+	console.log("graph.js: getting files...");
     files_xh.open("GET","log/",true);
     files_xh.send();
+    hide(document.getElementById('draw_button'));
+    show(document.getElementById('redraw_button'));
 }
+var reset_graph = function() {
+    if(DEBUG_ENABLED)
+	console.log("graph.js: reseting graph...");
+    files_xh=new XMLHttpRequest();
+    file_xh=new XMLHttpRequest();
+    files_parsed = 0;
+    data = new Array();
+}
+hide(document.getElementById('redraw_button'));
 hide(graph_div);

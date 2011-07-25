@@ -30,6 +30,7 @@ var drawGraph = function() {
 	    dataTable.setValue(i, 3, annotations[timestamp].long);
 	}	    
     }
+    show(graph_div);
     var chart = new google.visualization.AnnotatedTimeLine(graph_div);
     chart.draw(dataTable, {width: '100%',
                            height: 400,
@@ -106,3 +107,4 @@ var get_files = function() {
     files_xh.open("GET","log/",true);
     files_xh.send();
 }
+hide(graph_div);

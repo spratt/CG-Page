@@ -6,13 +6,13 @@ var enable_button = document.getElementById("enable_button");
 var disable_button = document.getElementById("disable_button");
 var enable_autoscroll = function() {
     autoscroll=true;
-    disable_button.style.visibility="visible";
-    enable_button.style.visibility="hidden";
+    hide(enable_button);
+    show(disable_button);
 };
 var disable_autoscroll = function() {
     autoscroll=false;
-    disable_button.style.visibility="hidden";
-    enable_button.style.visibility="visible";
+    hide(disable_button);
+    show(enable_button);
 };
 var logUpdate = function() {
     if(DEBUG_ENABLED)
@@ -21,7 +21,7 @@ var logUpdate = function() {
 	if(DEBUG_ENABLED)
 	    console.log("log_xh: Status: 200");
 	log_div.innerText=log_xh.responseText;
-	log_div.style.visibility="visible";
+	show(log_div);
 	if(autoscroll)
 	    log_div.scrollTop=log_div.scrollHeight;
     }
@@ -33,6 +33,7 @@ var refresh_log = function() {
     log_xh.open("GET","log/pnd.log",true);
     log_xh.send();
 }
+hide(log_div);
 enable_autoscroll();
 refresh_log();
 setInterval(refresh_log,5000);

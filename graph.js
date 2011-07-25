@@ -1,5 +1,5 @@
 // load google's corechart package
-google.load("visualization", "1", {packages:["corechart"]});
+google.load("visualization", "1", {packages:["annotatedtimeline"]});
 /******************************************************************************
 * Graph                                                                       *
 ******************************************************************************/
@@ -15,17 +15,25 @@ var drawGraph = function() {
     var dataTable = new google.visualization.DataTable();
     dataTable.addColumn('date','Date');
     dataTable.addColumn('number','Downtime');
+    dataTable.addColumn('string', 'title1');
+    dataTable.addColumn('string', 'text1');
     dataTable.addRows(data.length);
     for(var i = 0; i < data.length; ++i) {
 	dataTable.setValue(i, 0, data[i].date);
 	dataTable.setValue(i, 1, Number(data[i].downtime));
+	console.log(data[i].date.getTime());
+	if(data[i].date.getTime() == 1311393603000) {
+	    dataTable.setValue(i, 2, "Traffic Shaper disabled");
+	    dataTable.setValue(i, 3, "Traffic Shaper disabled");
+	} else {
+	    dataTable.setValue(i, 2, undefined);
+	    dataTable.setValue(i, 3, undefined);
+	}	    
     }
-    var chart = new google.visualization.LineChart(graph_div);
+    var chart = new google.visualization.AnnotatedTimeLine(graph_div);
     chart.draw(dataTable, {width: '100%',
                            height: 400,
-			   title: 'Downtime by date',
-			   legend: 'none',
-			   vAxis: {title: 'Downtime (s)'}
+			   'displayAnnotations': true
 			  });
 }
 /******************************************************************************

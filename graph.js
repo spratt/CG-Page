@@ -4,7 +4,7 @@ google.load("visualization", "1", {packages:["annotatedtimeline"]});
 * Graph                                                                       *
 ******************************************************************************/
 var annotations = {
-    '1311307200000':{'short':'Traffic Shaper disabled','long':'Traffic Shaper disabled'}
+    '1311307200000':{'short':'Traffic Shaper disabled','long':'disabled the output path downstream of 134.117.254.243'}
 };
 var graph_div = document.getElementById("graph_div");
 var data = new Array();

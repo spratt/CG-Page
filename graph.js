@@ -94,9 +94,11 @@ var parseDirectoryListing = function(text) {
 }
 var files_xh=new XMLHttpRequest();
 files_xh.onreadystatechange=function() {
-    console.log("files_xh: Ready state change...");
+    if(DEBUG_ENABLED)
+	console.log("files_xh: Ready state change...");
     if (files_xh.readyState==4 && files_xh.status==200) {
-	console.log("files_xh: Status: 200");
+	if(DEBUG_ENABLED)
+	    console.log("files_xh: Status: 200");
 	parseFiles(parseDirectoryListing(files_xh.responseText));
     }
 }

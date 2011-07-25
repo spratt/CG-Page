@@ -3,6 +3,9 @@ google.load("visualization", "1", {packages:["annotatedtimeline"]});
 /******************************************************************************
 * Graph                                                                       *
 ******************************************************************************/
+var annotations = {
+    '1311307200000':{'short':'Traffic Shaper disabled','long':'Traffic Shaper disabled'}
+};
 var graph_div = document.getElementById("graph_div");
 var data = new Array();
 var datum = function() {
@@ -21,13 +24,10 @@ var drawGraph = function() {
     for(var i = 0; i < data.length; ++i) {
 	dataTable.setValue(i, 0, data[i].date);
 	dataTable.setValue(i, 1, Number(data[i].downtime));
-	console.log(data[i].date.getTime());
-	if(data[i].date.getTime() == 1311307200000) {
-	    dataTable.setValue(i, 2, "Traffic Shaper disabled");
-	    dataTable.setValue(i, 3, "Traffic Shaper disabled");
-	} else {
-	    dataTable.setValue(i, 2, undefined);
-	    dataTable.setValue(i, 3, undefined);
+	var timestamp = data[i].date.getTime();
+	if(timestamp in annotations) {
+	    dataTable.setValue(i, 2, annotations[timestamp].short);
+	    dataTable.setValue(i, 3, annotations[timestamp].long);
 	}	    
     }
     var chart = new google.visualization.AnnotatedTimeLine(graph_div);
@@ -58,13 +58,11 @@ var parseLogText = function(text) {
     return toReturn;
 }
 var normalOnReadyStateChange = function() {
-    console.log("file_xh: Normal file...");
     if (file_xh.readyState==4 && file_xh.status==200) {
 	++files_parsed;
 	var datum = parseLogText(file_xh.responseText);
 	if(datum != null) data.push(datum);
 	if(files_parsed == num_of_files) {
-	    console.log("file_xh: Last file...");
 	    drawGraph();
 	}
     }

@@ -22,7 +22,7 @@ var drawGraph = function() {
 	dataTable.setValue(i, 0, data[i].date);
 	dataTable.setValue(i, 1, Number(data[i].downtime));
 	console.log(data[i].date.getTime());
-	if(data[i].date.getTime() == 1311393603000) {
+	if(data[i].date.getTime() == 1311307200000) {
 	    dataTable.setValue(i, 2, "Traffic Shaper disabled");
 	    dataTable.setValue(i, 3, "Traffic Shaper disabled");
 	} else {
@@ -50,6 +50,9 @@ var parseLogText = function(text) {
     var toReturn = new datum();
     date_line = date_line.substr(0,date_line.lastIndexOf(":"));
     toReturn.date = new Date(date_line);
+    toReturn.date.setHours(0);
+    toReturn.date.setMinutes(0);
+    toReturn.date.setSeconds(0);
     downtime_line = downtime_line.substr(downtime_line.indexOf(":")+2);
     toReturn.downtime = downtime_line.substr(0,downtime_line.indexOf("s")-1);
     return toReturn;

@@ -20,7 +20,7 @@ var logUpdate = function() {
     if (log_xh.readyState==4 && log_xh.status==200) {
 	if(DEBUG_ENABLED)
 	    console.log("log_xh: Status: 200");
-	log_div.innerText=log_xh.responseText;
+	$(log_div).text(log_xh.responseText);
 	show(log_div);
 	if(autoscroll)
 	    log_div.scrollTop=log_div.scrollHeight;

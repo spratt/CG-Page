@@ -1,0 +1,18 @@
+<html><head>
+<title>Simon Pratt's Computational Geometry page</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+<script src="http://www.google.com/jsapi"></script>
+<script src="common.js"></script>
+</head><body>
+<div id="graph_div" style="width:100%;height:400px"></div>
+<button id="draw_button" onclick="get_files()">Draw Graph</button>
+<button id="redraw_button" onclick="reset_graph(); get_files()">Redraw Graph</button>
+<script src="graph.js"></script>
+<a href="log/pnd.log">Today's log of network outages</a>
+<pre id="log_div" style="width: 100%; height: 50%; visibility: hidden; overflow-y: scroll; border: solid 1px black"></pre>
+<button id="enable_button" onclick="enable_autoscroll()">Enable Autoscroll</button>
+<button id="disable_button" onclick="disable_autoscroll()">Disable Autoscroll</button><br />
+<script src="log.js"></script>
+<a href="log/">Full list of logs</a>
+</body>
+</html>
